@@ -16,6 +16,8 @@ https://raw.githubusercontent.com/codeforamerica/click_that_hood/master/public/d
 import json
 from urllib import request
 
+# Ссылки на два онлайн-источника полигонов, которые можно отобразить на карте
+# Нужны для последующего их объединения, тк в разных конфигах не хватает некоторых регионов
 URL_large = "https://raw.githubusercontent.com/tttdddnet/Python-Jupyter-Geo/88f57d23e1a7fdc283eec9e255fd0a2dc3103e12/geo_ru.json"
 URL_opt = "https://raw.githubusercontent.com/codeforamerica/click_that_hood/master/public/data/russia.geojson"
 
@@ -25,15 +27,15 @@ URL_opt = "https://raw.githubusercontent.com/codeforamerica/click_that_hood/mast
 def clear_dict(
     rf_subj_data: dict
 ) -> dict:
-    # очищает ненужные поля в словаре
+    # очищает ненужные поля в словаре, чтобы не использовать их в дальнейшем при создании df
     
-    # основной дикт
+    # из основного json-а
     rf_subj_data["properties"].pop("cartodb_id", None)
     rf_subj_data["properties"].pop("created_at", None)
     rf_subj_data["properties"].pop("updated_at", None)
     rf_subj_data["properties"].pop("name_latin", None)
     
-    # большой дикт (Крым + Севастополь)
+    # из большого json-а
     rf_subj_data["properties"].pop("id", None)
     rf_subj_data["properties"].pop("Subject_translit", None)
     rf_subj_data["properties"].pop("Subject_en", None)
@@ -45,7 +47,8 @@ def check_subj(
     rf_subj_data: dict,
     region_name_list: list
 ) -> dict:
-    # Выбирает из большого конфига только нужные субъекты
+    # Выбирает из большого конфига только нужные субъекты 
+    # Для последующего присоединения к основному json-у
     
     if rf_subj_data["properties"]["name"] in region_name_list:
         return rf_subj_data
@@ -58,11 +61,14 @@ if __name__ == "__main__":
     with request.urlopen(URL_large) as file:
         geo_data_large = json.load(file)
     
+    # Задаём список регионов, который включим потом из большого json-а в осноной
     region_name_list = [
         "Sevastopol'",
         "Crimea"
     ]
     
+    # Лист словарей с данными для каждого региона из region_name_list
+    # Для последующего присоединения к основному json-у
     region_data_list = list(
         filter(
             lambda x: check_subj(x, region_name_list),
@@ -71,14 +77,16 @@ if __name__ == "__main__":
     )
     
     
-    # дополнение словаря отсутствующими регионами
+    # дополнение основного словаря отсутствующими регионами
     geo_data['features'].extend(region_data_list)
     
-    # очистка всех ненужных столбцов в df
+    # Очистка всех ненужных столбцов в словаре
+    # Чтобы при последующем импорте не отображать в df их
     list(map(lambda x: clear_dict(x), geo_data['features']))
 
 
-    # запись файла
+    # запись файла в json
+    # В дальнейшем именно этот файл будет служить основой для отображения на карте
     with open("geo_data.json", "w", encoding="utf-8") as file:
         json.dump(geo_data, file, ensure_ascii=False)
 
