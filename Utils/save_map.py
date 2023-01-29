@@ -1,3 +1,6 @@
+#!pip install pillow
+#!pip install selenium
+
 import io
 
 from PIL import Image

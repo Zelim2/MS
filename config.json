@@ -1,5 +1,5 @@
 {
     "Driver" : {
-        "selenium_path" : "C:\\Users\\Alex Yolgin\\Desktop\\driver"
+        "selenium_path" : "C:\\Your\\Path\\To\\Folder\\"
     }
 }
