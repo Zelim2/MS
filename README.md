@@ -1,5 +1,8 @@
 # MapsStatistics
 
+### Структура проекта:
+- html - ""
+
 ### Libraries:
 ###### Data processing:
 - pandas
