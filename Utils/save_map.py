@@ -10,7 +10,8 @@ import folium
 
 def map_to_png(
     Map: folium.folium.Map, 
-    config: dict
+    config: dict,
+    name: str="image.png"
 ) -> None:
     path = config["Driver"]["selenium_path"]
     
@@ -27,4 +28,4 @@ def map_to_png(
     )
     
     img = Image.open(io.BytesIO(Map._png_image))
-    img.save('image.png')
+    img.save(name)
