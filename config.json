@@ -1,5 +1,6 @@
 {
     "Driver" : {
-        "selenium_path" : "C:\\Your\\Path\\To\\Folder"
+        "Firefox" : "C:\\Your\\Path\\To\\Folder",
+        "Yandex" : "C:\\Your\\Path\\To\\Folder"
     }
 }

@@ -11,15 +11,23 @@ import folium
 def map_to_png(
     Map: folium.folium.Map, 
     config: dict,
-    name: str="image.png"
+    name: str="image.png",
+    driver_name: "str - Firefox / Yandex"="Firefox"
 ) -> None:
-    path = config["Driver"]["selenium_path"]
-    
-    options = webdriver.firefox.options.Options()
-    driver = webdriver.Firefox(
-        path,
-        options=options
-    )
+    path = config["Driver"][driver_name]
+    if driver_name == "Firefox":
+        options = webdriver.firefox.options.Options()
+        driver = webdriver.Firefox(
+            path,
+            options=options
+        )
+    elif driver_name == "Yandex":
+        path = config["Driver"][driver_name]
+        options = webdriver.ChromeOptions()
+        driver = webdriver.Chrome(
+            path,
+            options=options
+        )
     
     Map._png_image = None
     Map._to_png(
